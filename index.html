@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lary & Rey | Menú & Almuerzos del Día</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root[data-theme="light"] {
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-header: rgba(255, 255, 255, 0.85);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --primary-light: #d1fae5;
+      --border: #e2e8f0;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --cart-bg: #ffffff;
+      --badge-bg: #ecfdf5;
+      --badge-text: #059669;
+    }
+
+    :root[data-theme="dark"] {
+      --bg-body: #090d16;
+      --bg-card: #131c2e;
+      --bg-header: rgba(19, 28, 46, 0.85);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #10b981;
+      --primary-hover: #34d399;
+      --primary-light: rgba(16, 185, 129, 0.15);
+      --border: #1e293b;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+      --cart-bg: #131c2e;
+      --badge-bg: rgba(16, 185, 129, 0.15);
+      --badge-text: #34d399;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+    
+    body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 100px; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    header {
+      background: var(--bg-header);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.35rem; letter-spacing: -0.5px; }
+    .brand-icon {
+      background: var(--primary-light);
+      color: var(--primary);
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .status-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: pulse 2s infinite; }
+
+    .status-badge.closed {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+    .status-badge.closed .status-dot {
+      background: #ef4444;
+      animation: pulse-red 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    @keyframes pulse-red {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .theme-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Container */
+    .container { max-width: 1100px; margin: 2.5rem auto; padding: 0 1.5rem; flex-grow: 1; width: 100%; }
+
+    /* Hero Section */
+    .hero { text-align: center; margin-bottom: 2.5rem; }
+    .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -1px; background: linear-gradient(135deg, var(--text-main), var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto 1.5rem auto; line-height: 1.5; }
+
+    /* Search & Filters */
+    .filters-wrapper { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+    
+    .search-box {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .search-box i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-input {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.8rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      box-shadow: var(--shadow);
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--primary); }
+
+    .category-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.6rem 1.25rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Menu Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transform: translateY(0);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.15);
+      border-color: var(--primary);
+    }
+
+    .card-img-container {
+      height: 180px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-img {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.5s ease;
+    }
+    .card:hover .card-img { transform: scale(1.05); }
+
+    .card-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      color: white;
+      padding: 0.3rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .card-body { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+    .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.3px; }
+    .card-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem; flex-grow: 1; line-height: 1.5; }
+    
+    .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .price { font-size: 1.35rem; font-weight: 800; color: var(--primary); }
+
+    .btn-add {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.65rem 1.2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-add:hover { background: var(--primary-hover); transform: scale(1.02); }
+    .btn-add:active { transform: scale(0.98); }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 95px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--text-main);
+      color: var(--bg-body);
+      padding: 0.75rem 1.5rem;
+      border-radius: 30px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      z-index: 105;
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .toast i { color: var(--primary); }
+
+    /* Floating Cart Button */
+    .cart-float {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: var(--primary);
+      color: white;
+      padding: 0.9rem 1.75rem;
+      border-radius: 50px;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      z-index: 99;
+      transform: scale(1);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .cart-float:hover { background: var(--primary-hover); transform: scale(1.05); }
+
+    /* Scroll to Top Button */
+    .scroll-top {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 98;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+    }
+    .scroll-top.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .scroll-top:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .badge {
+      background: white;
+      color: var(--primary);
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    /* Modal / Drawer de Carrito */
+    .cart-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 101;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .cart-overlay.open { opacity: 1; visibility: visible; }
+
+    .cart-modal {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      max-width: 440px;
+      height: 100%;
+      background: var(--cart-bg);
+      box-shadow: -10px 0 40px rgba(0,0,0,0.3);
+      z-index: 102;
+      transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    .cart-modal.open { right: 0; }
+
+    .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+    .cart-header h2 { font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .close-cart { background: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; }
+    .close-cart:hover { border-color: var(--primary); color: var(--primary); }
+
+    .cart-items { flex-grow: 1; overflow-y: auto; margin-bottom: 1.5rem; max-height: 280px; padding-right: 4px; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .cart-item-info h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .cart-item-info span { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+    
+    .item-controls { display: flex; align-items: center; gap: 10px; }
+    .btn-qty { background: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); width: 28px; height: 28px; border-radius: 8px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .btn-qty:hover { border-color: var(--primary); color: var(--primary); }
+
+    .cart-summary { border-top: 1px solid var(--border); padding-top: 1.25rem; margin-top: auto; }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.95rem; color: var(--text-muted); }
+    .summary-row.total { font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed var(--border); }
+    .summary-row.total span:last-child { color: var(--primary); }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .input-field, .select-field {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-body);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .input-field:focus, .select-field:focus { border-color: var(--primary); }
+
+    .btn-submit {
+      width: 100%;
+      background: #25d366;
+      color: white;
+      border: none;
+      padding: 1.1rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 1rem;
+    }
+    .btn-submit:hover { background: #20ba5a; transform: translateY(-2px); }
+
+    .btn-clear {
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 1rem;
+    }
+    .btn-clear:hover { text-decoration: underline; }
+
+    /* Footer */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      margin-top: auto;
+    }
+    .footer-content { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; align-items: center; }
+    .footer-brand { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+    .footer-text { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+    .social-links { display: flex; gap: 1rem; margin-top: 0.5rem; }
+    .social-link { width: 38px; height: 38px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-main); text-decoration: none; font-size: 1rem; }
+    .social-link:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .container { padding: 0 1rem; margin: 1.5rem auto; }
+      .cart-modal { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-utensils"></i>
+      </div>
+      <span>Lary & Rey</span>
+    </div>
+    <div class="header-actions">
+      <div class="status-badge" id="statusBadge">
+        <div class="status-dot"></div>
+        <span class="status-text">Abierto ahora</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Cambiar Tema">
+        <i class="fa-solid fa-sun" id="themeIcon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="hero">
+      <h1>Menú & Almuerzos del Día 🍲</h1>
+      <p>Disfruta de la mejor sazón casera con ingredientes frescos del día. Selecciona tus platos favoritos y haz tu pedido directo al WhatsApp.</p>
+      
+      <!-- Search & Category Filters -->
+      <div class="filters-wrapper">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar plato, ingrediente o bebida..." oninput="filtrarMenu()">
+        </div>
+        
+        <div class="category-tabs">
+          <button class="tab-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
+          <button class="tab-btn" onclick="filtrarCategoria('almuerzos', this)">Almuerzos</button>
+          <button class="tab-btn" onclick="filtrarCategoria('especiales', this)">Especiales</button>
+          <button class="tab-btn" onclick="filtrarCategoria('bebidas', this)">Bebidas</button>
+          <button class="tab-btn" onclick="filtrarCategoria('postres', this)">Postres</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Grid (Generado dinámicamente) -->
+    <div class="menu-grid" id="menuGrid"></div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <i class="fa-solid fa-circle-check fa-lg"></i>
+    <span id="toastMsg">Plato añadido al carrito</span>
+  </div>
+
+  <!-- Botón Scroll to Top -->
+  <button class="scroll-top" id="scrollTopBtn" onclick="scrollToTop()" title="Subir al principio">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- Botón Flotante Carrito -->
+  <div class="cart-float" onclick="toggleCartModal()">
+    <i class="fa-solid fa-bag-shopping fa-lg"></i>
+    <span>Ver Pedido</span>
+    <div class="badge" id="cartCount">0</div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCartModal()"></div>
+
+  <!-- Panel Lateral del Carrito -->
+  <div class="cart-modal" id="cartModal">
+    <div class="cart-header">
+      <h2><i class="fa-solid fa-cart-shopping" style="color: var(--primary);"></i> Tu Pedido</h2>
+      <button class="close-cart" onclick="toggleCartModal()">&times;</button>
+    </div>
+
+    <button class="btn-clear" id="btnClear" onclick="vaciarCarrito()" style="display: none;">
+      <i class="fa-solid fa-trash-can"></i> Vaciar carrito
+    </button>
+
+    <div class="cart-items" id="cartList">
+      <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+        <i class="fa-solid fa-basket-shopping" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+        <p>Tu pedido está vacío</p>
+        <small>Selecciona deliciosos platos del menú para empezar.</small>
+      </div>
+    </div>
+
+    <div class="cart-summary" id="cartSummaryContainer" style="display: none;">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">$0.00</span>
+      </div>
+      <div class="summary-row">
+        <span>Servicio de Entrega</span>
+        <span>$0.00</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total a Pagar</span>
+        <span id="cartTotal">$0.00</span>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <div class="form-group">
+          <label class="form-label">Nombre y Apellido *</label>
+          <input type="text" id="nombre" class="input-field" placeholder="Ej. Carlos Pérez">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dirección de Entrega / Referencia *</label>
+          <input type="text" id="direccion" class="input-field" placeholder="Ej. Calle 23 #450 e/ A y B">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Método de Pago</label>
+          <select id="metodoPago" class="select-field">
+            <option value="Efectivo al recibir">💵 Efectivo al recibir</option>
+            <option value="Pago Móvil / Tarjeta">💳 Pago Móvil / Tarjeta</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notas adicionales (opcional)</label>
+          <input type="text" id="notas" class="input-field" placeholder="Ej. Sin ají, por favor bien caliente">
+        </div>
+
+        <button class="btn-submit" onclick="enviarWhatsApp()">
+          <i class="fa-brands fa-whatsapp" style="font-size: 1.4rem;"></i> Enviar Pedido por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <i class="fa-solid fa-utensils" style="color: var(--primary);"></i>
+        <span>Lary & Rey - Cocina Casera</span>
+      </div>
+      <p class="footer-text">
+        Horario de atención: Lunes a Sábados de 11:00 AM - 2:00 PM.<br>
+        Entregas rápidas y seguras hasta la puerta de tu hogar u oficina.
+      </p>
+      <div class="social-links">
+        <a href="#" class="social-link" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="social-link" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" class="social-link" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
+        &copy; 2026 Lary & Rey. Todos los derechos reservados. Desarrollado con excelencia.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    let carrito = {};
+    const TELEFONO_WHATSAPP = "5353771420"; // Reemplaza por el número de tu negocio
+
+    // 📋 ==========================================
+    // 📋 ACTUALIZA TU MENÚ DEL DÍA AQUÍ FÁCILMENTE
+    // 📋 Modifica los nombres, precios, descripciones o fotos sin tocar código HTML.
+    // 📋 ==========================================
+    const menuDelDia = [
+      {
+        nombre: "Almuerzo Ejecutivo",
+        categoria: "almuerzos",
+        precio: 600.00,
+        descripcion: "Arroz con gris, pechuga de pollo a la plancha, vianda frita y ensalada de la estación.",
+        imagen: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600",
+        tag: "Más vendido"
+      },
+      {
+        nombre: "Especial de Cerdo",
+        categoria: "especiales",
+        precio: 700.00,
+        descripcion: "Lomo de cerdo asado en su jugo, congrí tradicional, tostones y ensalada mixta.",
+        imagen: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600",
+        tag: "Chef's Choice"
+      },
+      {
+        nombre: "Pescado Frito Crujiente",
+        categoria: "almuerzos",
+        precio: 750.00,
+        descripcion: "Filete de pescado fresco empanizado y frito, acompañado de arroz blanco y ensalada fresca.",
+        imagen: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600",
+        tag: "Recomendado"
+      },
+      {
+        nombre: "Jugo Natural (500ml)",
+        categoria: "bebidas",
+        precio: 50.00,
+        descripcion: "Jugo fresco de fruta de temporada recién exprimido y helado (Mango, Guayaba o Piña).",
+        imagen: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=600",
+        tag: "Refrescante"
+      },
+      {
+        nombre: "Flan Casero de Caramelo",
+        categoria: "postres",
+        precio: 120.00,
+        descripcion: "Suave y cremoso flan tradicional bañado en caramelo dorado casero.",
+        imagen: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=600",
+        tag: "Dulce"
+      },
+      {
+        nombre: "Limonada Frappé",
+        categoria: "bebidas",
+        precio: 70.00,
+        descripcion: "Limonada helada batida con hojas de menta fresca y toque de azúcar de caña.",
+        imagen: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600",
+        tag: "Popular"
+      }
+    ];
+
+    function cargarMenu() {
+      const menuGrid = document.getElementById('menuGrid');
+      menuGrid.innerHTML = '';
+
+      menuDelDia.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.setAttribute('data-category', item.categoria);
+        card.setAttribute('data-name', item.nombre);
+        card.setAttribute('data-desc', item.descripcion);
+
+        card.innerHTML = `
+          <div class="card-img-container">
+            <div class="card-tag">${item.tag}</div>
+            <div class="card-img" style="background-image: url('${item.imagen}');"></div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${item.nombre}</div>
+            <div class="card-desc">${item.descripcion}</div>
+            <div class="card-footer">
+              <span class="price">$${item.precio.toFixed(2)}</span>
+              <button class="btn-add" onclick="agregarAlCarrito('${item.nombre.replace(/'/g, "\\'")}', ${item.precio})">
+                <i class="fa-solid fa-plus"></i> Pedir
+              </button>
+            </div>
+          </div>
+        `;
+        menuGrid.appendChild(card);
+      });
+    }
+
+    // Cargar carrito guardado en localStorage si existe
+    window.addEventListener('DOMContentLoaded', () => {
+      cargarMenu();
+
+      const savedCart = localStorage.getItem('lary_rey_carrito');
+      if (savedCart) {
+        try {
+          carrito = JSON.parse(savedCart);
+          actualizarUI();
+        } catch(e) {
+          carrito = {};
+        }
+      }
+      
+      // Sincronizar icono de tema al cargar
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      if (html.getAttribute('data-theme') === 'light') {
+        themeIcon.className = 'fa-solid fa-moon';
+      } else {
+        themeIcon.className = 'fa-solid fa-sun';
+      }
+
+      // Verificar horario de atención
+      verificarHorario();
+      setInterval(verificarHorario, 60000);
+    });
+
+    function verificarHorario() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const currentTime = hours * 60 + minutes;
+
+      const openTime = 11 * 60;  // 11:00 AM
+      const closeTime = 14 * 60; // 2:00 PM (14:00)
+
+      const statusBadge = document.getElementById('statusBadge');
+      const statusText = statusBadge.querySelector('.status-text');
+
+      if (currentTime >= openTime && currentTime < closeTime) {
+        statusBadge.classList.remove('closed');
+        statusText.innerText = 'Abierto ahora';
+      } else {
+        statusBadge.classList.add('closed');
+        statusText.innerText = 'Cerrado ahora';
+      }
+    }
+
+    // Control del botón flotante "Subir al principio"
+    window.addEventListener('scroll', () => {
+      const scrollTopBtn = document.getElementById('scrollTopBtn');
+      if (window.scrollY > 300) {
+        scrollTopBtn.classList.add('show');
+      } else {
+        scrollTopBtn.classList.remove('show');
+      }
+    });
+
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    function guardarLocalStorage() {
+      localStorage.setItem('lary_rey_carrito', JSON.stringify(carrito));
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      
+      if (html.getAttribute('data-theme') === 'dark') {
+        html.setAttribute('data-theme', 'light');
+        themeIcon.className = 'fa-solid fa-moon';
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        themeIcon.className = 'fa-solid fa-sun';
+      }
+    }
+
+    function toggleCartModal() {
+      document.getElementById('cartModal').classList.toggle('open');
+      document.getElementById('cartOverlay').classList.toggle('open');
+    }
+
+    function mostrarToast(mensaje) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.innerText = mensaje;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    function agregarAlCarrito(nombre, precio) {
+      const precioNum = Number(precio);
+      if (carrito[nombre]) {
+        carrito[nombre].cantidad++;
+      } else {
+        carrito[nombre] = { precio: precioNum, cantidad: 1 };
+      }
+      guardarLocalStorage();
+      actualizarUI();
+      mostrarToast(`¡${nombre} añadido al pedido!`);
+    }
+
+    function cambiarCantidad(nombre, delta) {
+      if (carrito[nombre]) {
+        carrito[nombre].cantidad += delta;
+        if (carrito[nombre].cantidad <= 0) {
+          delete carrito[nombre];
+        }
+      }
+      guardarLocalStorage();
+      actualizarUI();
+    }
+
+    function vaciarCarrito() {
+      if (confirm("¿Estás seguro de que deseas vaciar tu pedido?")) {
+        carrito = {};
+        guardarLocalStorage();
+        actualizarUI();
+        mostrarToast("Pedido vaciado");
+      }
+    }
+
+    function filtrarCategoria(categoria, btn) {
+      // Activar botón de pestaña
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.menu-grid .card');
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        if (categoria === 'todos' || cat === categoria) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function filtrarMenu() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.menu-grid .card');
+
+      cards.forEach(card => {
+        const name = card.getAttribute('data-name').toLowerCase();
+        const desc = card.getAttribute('data-desc').toLowerCase();
+        if (name.includes(query) || desc.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function actualizarUI() {
+      const cartList = document.getElementById('cartList');
+      const cartCount = document.getElementById('cartCount');
+      const cartSubtotal = document.getElementById('cartSubtotal');
+      const cartTotal = document.getElementById('cartTotal');
+      const cartSummaryContainer = document.getElementById('cartSummaryContainer');
+      const btnClear = document.getElementById('btnClear');
+
+      cartList.innerHTML = '';
+      let total = 0;
+      let count = 0;
+
+      const keys = Object.keys(carrito);
+      if (keys.length === 0) {
+        cartList.innerHTML = `
+          <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+            <i class="fa-solid fa-basket-shopping" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+            <p>Tu pedido está vacío</p>
+            <small>Selecciona deliciosos platos del menú para empezar.</small>
+          </div>
+        `;
+        cartSummaryContainer.style.display = 'none';
+        btnClear.style.display = 'none';
+      } else {
+        cartSummaryContainer.style.display = 'block';
+        btnClear.style.display = 'flex';
+
+        keys.forEach(nombre => {
+          const item = carrito[nombre];
+          const subtotal = item.precio * item.cantidad;
+          total += subtotal;
+          count += item.cantidad;
+
+          const div = document.createElement('div');
+          div.className = 'cart-item';
+
+          const infoDiv = document.createElement('div');
+          infoDiv.className = 'cart-item-info';
+          infoDiv.innerHTML = `
+            <h4>${nombre}</h4>
+            <span>$${item.precio.toFixed(2)} c/u &bull; <strong>$${subtotal.toFixed(2)}</strong></span>
+          `;
+
+          const controlsDiv = document.createElement('div');
+          controlsDiv.className = 'item-controls';
+
+          const btnMinus = document.createElement('button');
+          btnMinus.className = 'btn-qty';
+          btnMinus.innerHTML = '<i class="fa-solid fa-minus"></i>';
+          btnMinus.onclick = () => cambiarCantidad(nombre, -1);
+
+          const spanQty = document.createElement('span');
+          spanQty.style.fontWeight = '700';
+          spanQty.innerText = item.cantidad;
+
+          const btnPlus = document.createElement('button');
+          btnPlus.className = 'btn-qty';
+          btnPlus.innerHTML = '<i class="fa-solid fa-plus"></i>';
+          btnPlus.onclick = () => cambiarCantidad(nombre, 1);
+
+          controlsDiv.appendChild(btnMinus);
+          controlsDiv.appendChild(spanQty);
+          controlsDiv.appendChild(btnPlus);
+
+          div.appendChild(infoDiv);
+          div.appendChild(controlsDiv);
+
+          cartList.appendChild(div);
+        });
+      }
+
+      cartCount.innerText = count;
+      cartSubtotal.innerText = `$${total.toFixed(2)}`;
+      cartTotal.innerText = `$${total.toFixed(2)}`;
+    }
+
+    function enviarWhatsApp() {
+      const keys = Object.keys(carrito);
+      if (keys.length === 0) {
+        alert("Agrega al menos un plato a tu pedido.");
+        return;
+      }
+
+      const nombre = document.getElementById('nombre').value.trim();
+      const direccion = document.getElementById('direccion').value.trim();
+      const metodoPago = document.getElementById('metodoPago').value;
+      const notas = document.getElementById('notas').value.trim();
+
+      if (!nombre || !direccion) {
+        alert("Por favor completa tu nombre y dirección de entrega.");
+        document.getElementById('nombre').focus();
+        return;
+      }
+
+       let mensaje = `¡Hola Lary y Rey! 👋 Quiero confirmar mi pedido:\n\n`;
+       let total = 0;
+
+       keys.forEach(nombrePlato => {
+         const item = carrito[nombrePlato];
+         const subtotal = item.precio * item.cantidad;
+         total += subtotal;
+         mensaje += `• ${item.cantidad}x ${nombrePlato} ($${subtotal.toFixed(2)})\n`;
+       });
+
+       mensaje += `\nTotal a pagar: $${total.toFixed(2)}`;
+       mensaje += `\nMétodo de pago: ${metodoPago}`;
+       mensaje += `\nCliente: ${nombre}`;
+       mensaje += `\nDirección: ${direccion}`;
+       
+       if (notas) {
+         mensaje += `\nNotas: ${notas}`;
+       }
+
+       mensaje += `\n\n¡Muchas gracias!`;
+
+       const url = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+       window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
